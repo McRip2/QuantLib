@@ -21,6 +21,7 @@
 #include <ql/math/interpolations/bilinearinterpolation.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancesurface.hpp>
 #include <utility>
+#include <math.h>
 
 namespace QuantLib {
 
@@ -81,6 +82,25 @@ namespace QuantLib {
         else // t>times_.back() || extrapolate
             return varianceSurface_(times_.back(), strike, true) *
                 t/times_.back();
+    }
+    
+    BlackVarianceSurfaceShifted::BlackVarianceSurfaceShifted(const Date& referenceDate,
+                                                             const Calendar& cal,
+                                                             const std::vector<Date>& dates,
+                                                             std::vector<Real> strikes,
+                                                             const Matrix& blackVolMatrix,
+                                                             DayCounter dayCounter,
+                                                             RelinkableHandle<Quote> shift,
+                                                             BlackVarianceSurface::Extrapolation lowerEx,
+                                                             BlackVarianceSurface::Extrapolation upperEx)
+    : BlackVarianceSurface(referenceDate, cal, dates, strikes, blackVolMatrix, dayCounter, lowerEx, upperEx),
+      shift_(shift) {
+        this->registerWith(shift);
+    }
+
+    Real BlackVarianceSurfaceShifted::blackVarianceImpl(Time t, Real strike) const {
+        Real vol = BlackVarianceSurface::blackVarianceImpl(t,strike);
+        return vol * exp(shift_.currentLink()->value()); //shift_
     }
 
 }

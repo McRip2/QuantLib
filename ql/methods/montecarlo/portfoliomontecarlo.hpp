@@ -15,11 +15,16 @@ namespace QuantLib {
 
     Matrix simulate(const std::vector<ext::shared_ptr<Instrument>>& securities,
                     std::vector<RelinkableHandle<Quote>>& handles,
-                    const Matrix& field_sims) {
+		    std::vector<RelinkableHandle<Quote>>& vol_shift_handles,
+                    const Matrix& field_sims,
+		    const Matrix& vol_shifts) {
 
       assert (field_sims.columns() == handles.size());
+      assert (field_sims.columns() == vol_shifts.columns());
+      assert (field_sims.rows() == vol_shifts.rows());
+      
       Matrix simValues(field_sims.rows(), securities.size());
-      std::cout << "Beginning simulation n=" << field_sims.rows() << "m=" << field_sims.columns() << std::endl;
+      std::cout << "Beginning simulation n=" << field_sims.rows() << " " << "m=" << field_sims.columns() << std::endl;
 
       for(int t = 0; t < field_sims.rows(); t++)
         {
@@ -27,7 +32,9 @@ namespace QuantLib {
           for(int i = 0; i < field_sims.columns(); i++)
             {
               boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(field_sims[t][i]));
+	      boost::shared_ptr<SimpleQuote> vol_shift(new SimpleQuote(vol_shifts[t][i]));
               handles[i].linkTo(quote);
+	      vol_shift_handles[i].linkTo(vol_shift);
             }
 
           // calc value of securities
@@ -38,16 +45,6 @@ namespace QuantLib {
       return simValues;
     }
   };
-
-  // class TTTest {
-  // public:
-  //   void test(const std::vector<ext::shared_ptr<Instrument>>& securities) {
-
-  //     for(int i = 0; i < securities.size(); i++) {
-  //    std::cout << securities[i]->NPV() << std::endl;
-  //     }
-  //     return;
-  //   };
 }
 
 
