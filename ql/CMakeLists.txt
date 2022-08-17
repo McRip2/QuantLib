@@ -1243,6 +1243,7 @@ set(QL_HEADERS
     functional.hpp
     grid.hpp
     handle.hpp
+    monte_carlo.hpp
     index.hpp
     indexes/bmaindex.hpp
     indexes/ibor/aonia.hpp
@@ -1679,6 +1680,7 @@ set(QL_HEADERS
     methods/montecarlo/pathgenerator.hpp
     methods/montecarlo/pathpricer.hpp
     methods/montecarlo/sample.hpp
+    methods/montecarlo/portfoliomontecarlo.hpp
     models/calibrationhelper.hpp
     models/equity/batesmodel.hpp
     models/equity/gjrgarchmodel.hpp
