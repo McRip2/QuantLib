@@ -4,6 +4,7 @@
 #include <ql/instrument.hpp>
 #include <ql/types.hpp>
 #include <ql/math/matrix.hpp>
+#include <ql/patterns/observable.hpp>
 #include <vector>
 
 
@@ -27,15 +28,17 @@ namespace QuantLib {
 	  if(t%100 == 0) {
 	    std::cout << "t=" << t << std::endl;
 	  }
-	  
+
+	  ObservableSettings::instance().disableUpdates(true);
           // update handles
           for(int i = 0; i < sims.columns(); i++)
             {
               boost::shared_ptr<SimpleQuote> quote(new SimpleQuote(sims[t][i]));
               handles[i].linkTo(quote);
             }
-
+	  
           // calc value of securities
+	  ObservableSettings::instance().enableUpdates();	  
           for(int j = 0; j < securities.size(); j++) {
             simValues[t][j] = securities[j]->NPV();
           }
