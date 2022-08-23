@@ -27,7 +27,8 @@ cpp_files = \
 	brownianbridge.cpp \
 	genericlsregression.cpp \
 	lsmbasissystem.cpp \
-	parametricexercise.cpp
+	parametricexercise.cpp \
+	portfoliomontecarlo.cpp
 
 if UNITY_BUILD
 
